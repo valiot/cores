@@ -52,6 +52,7 @@ int usb_serial_putchar(uint8_t c);
 int usb_serial_write(const void *buffer, uint32_t size);
 int usb_serial_write_buffer_free(void);
 void usb_serial_flush_output(void);
+void usb_serial_set_rx_event_callback(void (*callback)(void));
 extern uint32_t usb_cdc_line_coding[2];
 extern volatile uint32_t usb_cdc_line_rtsdtr_millis;
 extern volatile uint32_t systick_millis_count;
@@ -101,6 +102,7 @@ public:
 	virtual int availableForWrite() { return usb_serial_write_buffer_free(); }
 	using Print::write;
         void send_now(void) { usb_serial_flush_output(); }
+        void setRxEventCallback(void (*callback)(void)) { usb_serial_set_rx_event_callback(callback); }
         uint32_t baud(void) { return usb_cdc_line_coding[0]; }
         uint8_t stopbits(void) { uint8_t b = usb_cdc_line_coding[1]; if (!b) b = 1; return b; }
         uint8_t paritytype(void) { return usb_cdc_line_coding[1] >> 8; } // 0=none, 1=odd, 2=even
@@ -187,6 +189,7 @@ int usb_serial2_putchar(uint8_t c);
 int usb_serial2_write(const void *buffer, uint32_t size);
 int usb_serial2_write_buffer_free(void);
 void usb_serial2_flush_output(void);
+void usb_serial2_set_rx_event_callback(void (*callback)(void));
 extern uint32_t usb_cdc2_line_coding[2];
 extern volatile uint32_t usb_cdc2_line_rtsdtr_millis;
 extern volatile uint8_t usb_cdc2_line_rtsdtr;
@@ -230,6 +233,7 @@ public:
         virtual int availableForWrite() { return usb_serial2_write_buffer_free(); }
         using Print::write;
         void send_now(void) { usb_serial2_flush_output(); }
+        void setRxEventCallback(void (*callback)(void)) { usb_serial2_set_rx_event_callback(callback); }
         uint32_t baud(void) { return usb_cdc2_line_coding[0]; }
         uint8_t stopbits(void) { uint8_t b = usb_cdc2_line_coding[1]; if (!b) b = 1; return b; }
         uint8_t paritytype(void) { return usb_cdc2_line_coding[1] >> 8; } // 0=none, 1=odd, 2=even
@@ -275,6 +279,7 @@ int usb_serial3_putchar(uint8_t c);
 int usb_serial3_write(const void *buffer, uint32_t size);
 int usb_serial3_write_buffer_free(void);
 void usb_serial3_flush_output(void);
+void usb_serial3_set_rx_event_callback(void (*callback)(void));
 extern uint32_t usb_cdc3_line_coding[2];
 extern volatile uint32_t usb_cdc3_line_rtsdtr_millis;
 extern volatile uint8_t usb_cdc3_line_rtsdtr;
@@ -318,6 +323,7 @@ public:
         virtual int availableForWrite() { return usb_serial3_write_buffer_free(); }
         using Print::write;
         void send_now(void) { usb_serial3_flush_output(); }
+        void setRxEventCallback(void (*callback)(void)) { usb_serial3_set_rx_event_callback(callback); }
         uint32_t baud(void) { return usb_cdc3_line_coding[0]; }
         uint8_t stopbits(void) { uint8_t b = usb_cdc3_line_coding[1]; if (!b) b = 1; return b; }
         uint8_t paritytype(void) { return usb_cdc3_line_coding[1] >> 8; } // 0=none, 1=odd, 2=even

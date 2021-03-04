@@ -88,6 +88,7 @@ static volatile uint32_t rx_available;
 static void rx_queue_transfer(int i);
 static void rx_event(transfer_t *t);
 
+void (*usb_serial_rx_event_callback)(void) = NULL;
 
 void usb_serial_reset(void)
 {
@@ -123,6 +124,10 @@ void usb_serial_configure(void)
 	timer_config(usb_serial_flush_callback, TRANSMIT_FLUSH_TIMEOUT);
 }
 
+void usb_serial_set_rx_event_callback(void (*callback)(void))
+{
+	usb_serial_rx_event_callback = callback;
+}
 
 /*************************************************************************/
 /**                               Receive                               **/
@@ -159,6 +164,7 @@ static void rx_event(transfer_t *t)
 				rx_count[ii] = count + len;
 				rx_available += len;
 				rx_queue_transfer(i);
+				if (usb_serial_rx_event_callback != NULL) usb_serial_rx_event_callback();
 				// TODO: trigger serialEvent
 				return;
 			}
@@ -170,6 +176,7 @@ static void rx_event(transfer_t *t)
 		rx_list[head] = i;
 		rx_head = head;
 		rx_available += len;
+		if (usb_serial_rx_event_callback != NULL) usb_serial_rx_event_callback();
 		// TODO: trigger serialEvent
 	} else {
 		// received a zero length packet
