@@ -1,0 +1,6 @@
+{
+  "name": "framework-arduinoteensy",
+  "description": "Arduino Core for Teensy",
+  "version": "1.153.0",
+  "url": "https://github.com/valiot/cores"
+}
